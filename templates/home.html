@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>SiteScrape</title>
+        <link rel="stylesheet" href="static/home.css">
+        <link rel="icon" type="image/x-icon" href="/static/icon1.png">
+</head>
+    <body>
+        <header>
+            <div class="logo-container">
+                <img src="{{ url_for('static', filename='icon1.png') }}" alt="Logo" class="logo">
+                <h1>SiteScrape</h1>
+            </div>
+        </header>
+        <main>
+            <form action="/scrape" method="POST" name="form" class="url-form">
+                <div class="form-group">
+                    <label for="url">Enter URL to scrape:</label>
+                    <input type="url" id="url" name="url" placeholder="https://example.com" required>
+                </div>
+                <button type="submit">Scrape Data</button>
+            </form>
+            {% if scraped_tables %}
+            <h2>Scraped Tables</h2>
+            <div id="tables-container">
+                {% for table_html in scraped_tables %}
+                    <div class="table-wrapper">
+                        <div class="table-content">
+                            {{ table_html|safe }}
+                        </div>
+                        <form action="/download_excel" method="POST">
+                            <button type="submit">Download CSV</button>
+                            <input type="hidden" name="tables_data" value="{{ tables_data }}">
+                            <input type="hidden" name="table_index" value="{{ loop.index0 }}">
+                        </form>
+                    </div>
+                {% endfor %}
+            </div>
+            {%else%}
+            <div class="table-wrapper">
+                No tables found 😒
+            </div>
+        {% endif %}
+    </main>
+</body>
